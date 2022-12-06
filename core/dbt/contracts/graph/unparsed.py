@@ -523,3 +523,48 @@ class UnparsedMetric(dbtClassMixin, Replaceable):
 
         if data.get("model") is not None and data.get("calculation_method") == "derived":
             raise ValidationError("Derived metrics cannot have a 'model' property")
+
+@dataclass
+class EntityDimension(dbtClassMixin, Mergeable):
+    """This class is used for the dimension information at the entity level"""
+    name: str
+    description: str = ""
+    column_name: Optional[str] = None
+    date_type: Optional[str] = None
+    default_timestamp: Optional[bool] = None
+    primary_key: Optional[bool] = None
+    time_grains: Optional[List[str]] = field(default_factory=list)
+    tags: List[str] = field(default_factory=list)
+    meta: Dict[str, Any] = field(default_factory=dict)
+
+@dataclass
+class EntityInheritence(dbtClassMixin, Mergeable):
+    """This class is used for entity dimension inheritence. This class is optional
+    but if it is present then include needs to be present. Exclude cannot be present
+    without some idea of what is being included, whereas exclude is fully optional.
+    The acceptable inputs for include are either a list of columns/dimensions or *
+    to represent all fields. The acceptable inputs for exclude are a list of columns/
+    dimensions
+    """
+    include: Union[List[str],str] = None
+    exclude: Optional[List[str]] = []
+
+@dataclass
+class UnparsedEntity(dbtClassMixin, Replaceable):
+    """This class is used for entity information"""
+    name: str
+    model: str
+    description: str = ""
+    dimensions: Optional[Sequence[EntityDimension]] = None
+    # dimensions: Optional[Sequence[EntityInheritence]] = None
+    # dimensions: Optional[List[str]] = None
+    # List[Union[EntityDimension,EntityInheritence]] = field(default_factory=list)
+    meta: Dict[str, Any] = field(default_factory=dict)
+    tags: List[str] = field(default_factory=list)
+    config: Dict[str, Any] = field(default_factory=dict)
+
+    @classmethod
+    def validate(cls, data):
+        super(UnparsedEntity, cls).validate(data)
+        errors = []
+        ## TODO: Add validation here around include/exclude and others
