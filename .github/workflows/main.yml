@@ -124,8 +124,22 @@ jobs:
         include:
           - python-version: 3.8
             os: windows-latest
+            split-group: 1
+          - python-version: 3.8
+            os: windows-latest
+            split-group: 2
+          - python-version: 3.8
+            os: windows-latest
+            split-group: 3
           - python-version: 3.8
             os: macos-latest
+            split-group: 1
+          - python-version: 3.8
+            os: macos-latest
+            split-group: 2
+          - python-version: 3.8
+            os: macos-latest
+            split-group: 3
     env:
       TOXENV: integration
       DBT_INVOCATION_ENV: github-actions
