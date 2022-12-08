@@ -50,7 +50,6 @@ class TestExitCodes(BaseConfigProject):
 
     def test_snapshot_pass(self, project):
         run_dbt(["run", "--model", "good"])
-
         results = run_dbt(['snapshot'])
         assert len(results) == 1
         check_table_does_exist(project.adapter, 'good_snapshot')

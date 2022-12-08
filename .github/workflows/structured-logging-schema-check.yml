@@ -23,6 +23,9 @@ jobs:
   test-schema:
     name: Test Log Schema
     runs-on: ubuntu-20.04
+    strategy:
+      matrix: 
+        split-group: ["1", "2", "3"]
     env:
       # turns warnings into errors
       RUSTFLAGS: "-D warnings"
@@ -63,3 +66,5 @@ jobs:
       # we actually care if these pass, because the normal test run doesn't usually include many json log outputs
       - name: Run integration tests
         run: tox -e integration -- -nauto
+        env:
+          PYTEST_ADDOPTS: ${{ format('--splits 3 --group {0}', matrix.split-group) }}
