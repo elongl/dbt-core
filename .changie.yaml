@@ -7,7 +7,7 @@ versionExt: md
 envPrefix: "CHANGIE_"
 versionFormat: '## dbt-core {{.Version}} - {{.Time.Format "January 02, 2006"}}'
 kindFormat: '### {{.Kind}}'
-changeFormat: '- {{.env.CORE_TEAM}} {{.Body}} ([#{{.Custom.Issue}}](https://github.com/dbt-labs/dbt-core/issues/{{.Custom.Issue}}), [#{{.Custom.PR}}](https://github.com/dbt-labs/dbt-core/pull/{{.Custom.PR}}))'
+changeFormat: '- {{.Body}} ([#{{.Custom.Issue}}](https://github.com/dbt-labs/dbt-core/issues/{{.Custom.Issue}}), [#{{.Custom.PR}}](https://github.com/dbt-labs/dbt-core/pull/{{.Custom.PR}}))'
 
 kinds:
   - label: Breaking Changes
@@ -44,10 +44,15 @@ custom:
 
 footerFormat: |
   {{- $contributorDict := dict }}
-  {{- /* any names added to this list should be all lowercase for later matching purposes */}}
+  {{- /* ensure all names in this list are all lowercase for later matching purposes */}}
   {{- $exclude_authors := list "dependabot[bot]" "snyk-bot"}}
-  {{- $core_team := splitList " " .env.CORE_TEAM }}
-  {{- $exclude_authors := append $exclude_authors $core_team}}
+  {{- $core_team := splitList " " .Env.CORE_TEAM }}
+  {{- $core_team_lower := list }}
+  {{- range $team_member := $core_team }}
+    {{- $team_member_lower := lower $team_member }}
+    {{- $core_team_lower = append $core_team_lower $team_member_lower }}
+  {{- end }}
+  {{- $exclude_authors := concat $exclude_authors $core_team_lower}}
   {{- range $change := .Changes }}
     {{- $authorList := splitList " " $change.Custom.Author }}
     {{- /* loop through all authors for a PR */}}
