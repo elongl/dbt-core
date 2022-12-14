@@ -45,10 +45,11 @@ from dbt.events.types import (
 from dbt.events.contextvars import get_node_info
 from .printer import print_run_result_error
 
-from dbt.adapters.factory import register_adapter
+from dbt.adapters.factory import get_adapter, register_adapter
 from dbt.config import RuntimeConfig, Project
 from dbt.config.profile import read_profile
 import dbt.exceptions
+from dbt.graph import Graph
 
 
 class NoneConfig:
@@ -173,6 +174,26 @@ class ConfiguredTask(BaseTask):
     def __init__(self, args, config):
         super().__init__(args, config)
         register_adapter(self.config)
+        self.graph: Optional[Graph] = None
+        self.manifest: Optional[Manifest] = None
+
+    def set_manifest(self, manifest: Manifest):
+        self.manifest = manifest
+
+    def compile_manifest(self):
+        if self.manifest is None:
+            raise InternalException("compile_manifest called before manifest was loaded")
+
+        start_compile_manifest = time.perf_counter()
+
+        # we cannot get adapter in init since it will break rpc #5579
+        adapter = get_adapter(self.config)
+        compiler = adapter.get_compiler()
+        self.graph = compiler.compile(self.manifest)
+
+        compile_time = time.perf_counter() - start_compile_manifest
+        if dbt.tracking.active_user is not None:
+            dbt.tracking.track_runnable_timing({"graph_compilation_elapsed": compile_time})
 
     @classmethod
     def from_args(cls, args):

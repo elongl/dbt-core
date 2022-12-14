@@ -31,7 +31,7 @@ from dbt.events.types import (
     CannotGenerateDocs,
     BuildingCatalog,
 )
-from dbt.parser.manifest import ManifestLoader
+from dbt.parser.manifest import ManifestLoader, write_manifest
 import dbt.utils
 import dbt.compilation
 import dbt.exceptions
@@ -199,11 +199,6 @@ def get_unique_id_mapping(
 
 
 class GenerateTask(CompileTask):
-    def _get_manifest(self) -> Manifest:
-        if self.manifest is None:
-            raise InternalException("manifest should not be None in _get_manifest")
-        return self.manifest
-
     def run(self) -> CatalogArtifact:
         compile_results = None
         if self.args.compile:
@@ -262,7 +257,12 @@ class GenerateTask(CompileTask):
         path = os.path.join(self.config.target_path, CATALOG_FILENAME)
         results.write(path)
         if self.args.compile:
-            self.write_manifest()
+            write_manifest(
+                self.manifest,
+                self.config.target_path,
+                write_json=self.args.WRITE_JSON,
+                write_files=True,
+            )
 
         if exceptions:
             fire_event(WriteCatalogFailure(num_exceptions=len(exceptions)))
