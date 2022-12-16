@@ -18,14 +18,39 @@ on:
 
 permissions: read-all
 
+# top-level adjustments can be made here
+env:
+  # number of parallel processes to spawn for python testing
+  PYTHON_TEST_WORKERS: 5
+
 jobs:
+  integration-metadata:
+    name: integration test metadata generation
+    runs-on: ubuntu-latest
+    outputs:
+      split-groups: ${{ steps.generate-split-groups.outputs.split-groups }}
+
+    steps:
+      - name: generate split-groups
+        id: generate-split-groups
+        run: |
+          MATRIX_JSON="["
+          for B in $(seq 1 ${{ env.PYTHON_TEST_WORKERS }}); do
+              MATRIX_JSON+=$(sed 's/^/"/;s/$/"/' <<< "${B}")
+          done
+          MATRIX_JSON="${MATRIX_JSON//\"\"/\", \"}"
+          MATRIX_JSON+="]"
+          echo "split-groups=${MATRIX_JSON}" >> $GITHUB_OUTPUT
+
   # run the performance measurements on the current or default branch
   test-schema:
     name: Test Log Schema
     runs-on: ubuntu-20.04
+    needs:
+      - integration-metadata
     strategy:
       matrix:
-        split-group: ["1", "2", "3"]
+        split-group: ${{ fromJson(needs.integration-metadata.outputs.split-groups) }}
     env:
       # turns warnings into errors
       RUSTFLAGS: "-D warnings"
@@ -67,4 +92,4 @@ jobs:
       - name: Run integration tests
         run: tox -e integration -- -nauto
         env:
-          PYTEST_ADDOPTS: ${{ format('--splits 3 --group {0}', matrix.split-group) }}
+          PYTEST_ADDOPTS: ${{ format('--splits {0} --group {1}', env.PYTHON_TEST_WORKERS, matrix.split-group) }}
