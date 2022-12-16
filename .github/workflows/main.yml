@@ -33,6 +33,11 @@ defaults:
   run:
     shell: bash
 
+# top-level adjustments can be made here
+env:
+  # number of parallel processes to spawn for python testing
+  PYTHON_TEST_WORKERS: 5
+
 jobs:
   code-quality:
     name: code-quality
@@ -109,18 +114,37 @@ jobs:
           name: unit_results_${{ matrix.python-version }}-${{ steps.date.outputs.date }}.csv
           path: unit_results.csv
 
+  integration-metadata:
+    name: integration test metadata generation
+    runs-on: ubuntu-latest
+    outputs:
+      split-groups: ${{ steps.generate-split-groups.outputs.split-groups }}
+
+    steps:
+      - name: generate split-groups
+        id: generate-split-groups
+        run: |
+          MATRIX_JSON="["
+          for B in $(seq 1 ${{ env.PYTHON_TEST_WORKERS }}); do
+              MATRIX_JSON+=$(sed 's/^/"/;s/$/"/' <<< "${B}")
+          done
+          MATRIX_JSON="${MATRIX_JSON//\"\"/\", \"}"
+          MATRIX_JSON+="]"
+          echo "split-groups=${MATRIX_JSON}" >> $GITHUB_OUTPUT
+
   integration:
     name: integration test / python ${{ matrix.python-version }} / ${{ matrix.os }} / group ${{ matrix.split-group }}
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
-
+    needs:
+      - integration-metadata
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         os: [ubuntu-20.04]
-        split-group: ["1", "2", "3"]
+        split-group: ${{ fromJson(needs.integration-metadata.outputs.split-groups) }}
         include:
           - python-version: 3.8
             os: windows-latest
@@ -178,7 +202,7 @@ jobs:
       - name: Run tests
         run: tox
         env:
-          PYTEST_ADDOPTS: ${{ format('-v --color=yes -n4 --csv integration_results.csv --splits 3 --group {0}', matrix.split-group) }}
+          PYTEST_ADDOPTS: ${{ format('-v --color=yes -n4 --csv integration_results.csv --splits {0} --group {1}', env.PYTHON_TEST_WORKERS, matrix.split-group) }}
 
       - name: Get current date
         if: always()
