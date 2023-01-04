@@ -136,15 +136,12 @@ jobs:
       - name: generate include
         id: generate-include
         run: |
-          INCLUDE_PYTHON_VERSION=("3.8")
-          INCLUDE_OS=("windows-latest" "macos-latest")
+          INCLUDE=('"python-version":"3.8","os":"windows-latest"' '"python-version":"3.8","os":"macos-latest"' )
           INCLUDE_GROUPS="["
-          for group in $(seq 1 ${{ env.PYTHON_TEST_WORKERS }}); do
-            for python_version in ${INCLUDE_PYTHON_VERSION[@]}; do
-                for os in ${INCLUDE_OS[@]}; do
-                    INCLUDE_GROUPS+=$(sed 's/$/, /' <<< "{\"split-group\": \"${group}\", \"python-version\": \"${python_version}\", \"os\": \"${os}\"}")
-                done
-            done
+          for include in ${INCLUDE[@]}; do
+              for group in $(seq 1 5); do
+                  INCLUDE_GROUPS+=$(sed 's/$/, /' <<< "{\"split-group\":\"${group}\",${include}}")
+              done
           done
           INCLUDE_GROUPS=$(echo $INCLUDE_GROUPS | sed 's/,*$//g')
           INCLUDE_GROUPS+="]"
