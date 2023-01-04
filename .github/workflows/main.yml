@@ -224,7 +224,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: coverage
+          name: integration_coverage_${{ matrix.python-version }}_${{ matrix.os }}
           path: .coverage.${{ matrix.split-group }}
 
   integration-results:
@@ -246,13 +246,51 @@ jobs:
           path: ./integration_results
 
       - name: Generate combined integration result
-        run: head -n 1 $(ls integration_results/*.csv | head -1) > combined.csv && && tail -n+2 -q integration_results/*.csv >> combined.csv
+        run: head -n 1 $(ls integration_results/*.csv | head -1) > combined.csv && tail -n+2 -q integration_results/*.csv >> combined.csv
 
       - name: Store combined integration results
         uses: actions/upload-artifact@v3
         with:
           name: integration_results_3.8_ubuntu-20.04.csv
           path: combined.csv
+
+  integration-coverage-results:
+    runs-on: ubuntu-20.04
+
+    needs:
+      - integration-metadata
+      - integration
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: "3.8"
+
+      - name: Download integration result artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: integration_coverage_3.8_ubuntu-20.04
+          path: ./coverage
+
+      - name: Generate combined integration coverage result
+        run: |
+          pip3 install coverage==7.0.3
+          COVERAGE_FILES=$(find coverage/.coverage.* | sed -z 's/\n/ /g')
+          echo "combining coverage files: $COVERAGE_FILES"
+          coverage combine $COVERAGE_FILES
+          coverage report
+
+      - name: Generate HTML report
+        run: coverage html
+
+      - name: Store HTML coverage files
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-coverage
+          path: htmlcov/index.html
 
   build:
     name: build packages
