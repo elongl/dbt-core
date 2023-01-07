@@ -2588,7 +2588,7 @@ class DebugConfigurationFailure(ErrorLevel, pt.DebugConfigurationFailure):
 
 
 @dataclass
-class DebugConnectionDetails(ErrorLevel, pt.DebugConnectionDetails):
+class DebugConnectionDetails(InfoLevel, pt.DebugConnectionDetails):
     def code(self):
         return "Z054"
 
@@ -2597,7 +2597,7 @@ class DebugConnectionDetails(ErrorLevel, pt.DebugConnectionDetails):
 
 
 @dataclass
-class DebugConnectionSuccess(ErrorLevel, pt.DebugConnectionSuccess):
+class DebugConnectionSuccess(InfoLevel, pt.DebugConnectionSuccess):
     def code(self):
         return "Z055"
 
@@ -2615,7 +2615,7 @@ class DebugConnectionFailure(ErrorLevel, pt.DebugConnectionFailure):
 
 
 @dataclass
-class DebugRunSuccess(ErrorLevel, pt.DebugRunSuccess):
+class DebugRunSuccess(InfoLevel, pt.DebugRunSuccess):
     def code(self):
         return "Z057"
 
@@ -2633,7 +2633,7 @@ class DebugRunFailure(ErrorLevel, pt.DebugRunFailure):
 
 
 @dataclass
-class DebugMiscMessages(ErrorLevel, pt.DebugMiscMessages):
+class DebugMiscMessages(WarnLevel, pt.DebugMiscMessages):
     def code(self):
         return "Z059"
 
