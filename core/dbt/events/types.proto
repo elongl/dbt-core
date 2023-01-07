@@ -1289,6 +1289,85 @@ message NoNodesSelected {
     EventInfo info = 1;
 }
 
+// Q039
+message DebugEnvironmentDetails {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q040
+message DebugDependenciesDetails {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q041
+message DebugDependenciesSuccess {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q042
+message DebugDependenciesFailure {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q043
+message DebugConfigurationDetails {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q044
+message DebugConfigurationSuccess {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// QO45
+message DebugConfigurationFailure {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q046
+message DebugConnectionDetails {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q047
+message DebugConnectionSuccess {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q048
+message DebugConnectionFailure {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q049
+message DebugRunSuccess {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q050
+message DebugRunFailure {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+// Q051
+message DebugMiscMessages {
+    EventInfo info = 1;
+    string msg = 2;
+}
+
+
 // W - Node testing
 
 // Skipped W001
