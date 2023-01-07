@@ -1637,110 +1637,6 @@ class NoNodesSelected(betterproto.Message):
 
 
 @dataclass
-class DebugEnvironmentDetails(betterproto.Message):
-    """Q039"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugDependenciesDetails(betterproto.Message):
-    """Q040"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugDependenciesSuccess(betterproto.Message):
-    """Q041"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugDependenciesFailure(betterproto.Message):
-    """Q042"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugConfigurationDetails(betterproto.Message):
-    """Q043"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugConfigurationSuccess(betterproto.Message):
-    """Q044"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugConfigurationFailure(betterproto.Message):
-    """QO45"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugConnectionDetails(betterproto.Message):
-    """Q046"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugConnectionSuccess(betterproto.Message):
-    """Q047"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugConnectionFailure(betterproto.Message):
-    """Q048"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugRunSuccess(betterproto.Message):
-    """Q049"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugRunFailure(betterproto.Message):
-    """Q050"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
-class DebugMiscMessages(betterproto.Message):
-    """Q051"""
-
-    info: "EventInfo" = betterproto.message_field(1)
-    msg: str = betterproto.string_field(2)
-
-
-@dataclass
 class CatchableExceptionOnRun(betterproto.Message):
     """W002"""
 
@@ -2115,6 +2011,110 @@ class TrackingInitializeFailure(betterproto.Message):
 @dataclass
 class RunResultWarningMessage(betterproto.Message):
     """Z046"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugEnvironmentDetails(betterproto.Message):
+    """Z047"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugDependenciesDetails(betterproto.Message):
+    """Z048"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugDependenciesSuccess(betterproto.Message):
+    """Z049"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugDependenciesFailure(betterproto.Message):
+    """Z050"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugConfigurationDetails(betterproto.Message):
+    """Z051"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugConfigurationSuccess(betterproto.Message):
+    """Z052"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugConfigurationFailure(betterproto.Message):
+    """QO53"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugConnectionDetails(betterproto.Message):
+    """Z054"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugConnectionSuccess(betterproto.Message):
+    """Z055"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugConnectionFailure(betterproto.Message):
+    """Z056"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugRunSuccess(betterproto.Message):
+    """Z057"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugRunFailure(betterproto.Message):
+    """Z058"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
+class DebugMiscMessages(betterproto.Message):
+    """Z059"""
 
     info: "EventInfo" = betterproto.message_field(1)
     msg: str = betterproto.string_field(2)

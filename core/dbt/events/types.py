@@ -2039,123 +2039,6 @@ class NoNodesSelected(WarnLevel, pt.NoNodesSelected):
         return "No nodes selected!"
 
 
-@dataclass
-class DebugEnvironmentDetails(InfoLevel, pt.DebugEnvironmentDetails):
-    def code(self):
-        return "Q039"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugDependenciesDetails(InfoLevel, pt.DebugDependenciesDetails):
-    def code(self):
-        return "Q040"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugDependenciesSuccess(InfoLevel, pt.DebugDependenciesSuccess):
-    def code(self):
-        return "Q041"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugDependenciesFailure(ErrorLevel, pt.DebugDependenciesFailure):
-    def code(self):
-        return "Q042"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugConfigurationDetails(InfoLevel, pt.DebugConfigurationDetails):
-    def code(self):
-        return "Q043"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugConfigurationSuccess(InfoLevel, pt.DebugConfigurationSuccess):
-    def code(self):
-        return "Q044"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugConfigurationFailure(ErrorLevel, pt.DebugConfigurationFailure):
-    def code(self):
-        return "Q045"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugConnectionDetails(ErrorLevel, pt.DebugConnectionDetails):
-    def code(self):
-        return "Q046"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugConnectionSuccess(ErrorLevel, pt.DebugConnectionSuccess):
-    def code(self):
-        return "Q047"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugConnectionFailure(ErrorLevel, pt.DebugConnectionFailure):
-    def code(self):
-        return "Q048"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugRunSuccess(ErrorLevel, pt.DebugRunSuccess):
-    def code(self):
-        return "Q049"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugRunFailure(ErrorLevel, pt.DebugRunFailure):
-    def code(self):
-        return "Q050"
-
-    def message(self) -> str:
-        return self.msg
-
-
-@dataclass
-class DebugMiscMessages(ErrorLevel, pt.DebugMiscMessages):
-    def code(self):
-        return "Q051"
-
-    def message(self) -> str:
-        return self.msg
-
-
 # =======================================================
 # W - Node testing
 # =======================================================
@@ -2638,4 +2521,121 @@ class RunResultWarningMessage(WarnLevel, EventStringFunctor, pt.RunResultWarning
 
     def message(self) -> str:
         # This is the message on the result object, cannot be formatted in event
+        return self.msg
+
+
+@dataclass
+class DebugEnvironmentDetails(InfoLevel, pt.DebugEnvironmentDetails):
+    def code(self):
+        return "Z047"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugDependenciesDetails(InfoLevel, pt.DebugDependenciesDetails):
+    def code(self):
+        return "Z048"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugDependenciesSuccess(InfoLevel, pt.DebugDependenciesSuccess):
+    def code(self):
+        return "Z049"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugDependenciesFailure(ErrorLevel, pt.DebugDependenciesFailure):
+    def code(self):
+        return "Z050"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugConfigurationDetails(InfoLevel, pt.DebugConfigurationDetails):
+    def code(self):
+        return "Z051"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugConfigurationSuccess(InfoLevel, pt.DebugConfigurationSuccess):
+    def code(self):
+        return "Z052"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugConfigurationFailure(ErrorLevel, pt.DebugConfigurationFailure):
+    def code(self):
+        return "Z053"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugConnectionDetails(ErrorLevel, pt.DebugConnectionDetails):
+    def code(self):
+        return "Z054"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugConnectionSuccess(ErrorLevel, pt.DebugConnectionSuccess):
+    def code(self):
+        return "Z055"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugConnectionFailure(ErrorLevel, pt.DebugConnectionFailure):
+    def code(self):
+        return "Z056"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugRunSuccess(ErrorLevel, pt.DebugRunSuccess):
+    def code(self):
+        return "Z057"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugRunFailure(ErrorLevel, pt.DebugRunFailure):
+    def code(self):
+        return "Z058"
+
+    def message(self) -> str:
+        return self.msg
+
+
+@dataclass
+class DebugMiscMessages(ErrorLevel, pt.DebugMiscMessages):
+    def code(self):
+        return "Z059"
+
+    def message(self) -> str:
         return self.msg
