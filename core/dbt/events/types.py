@@ -2639,3 +2639,12 @@ class DebugMiscMessages(WarnLevel, pt.DebugMiscMessages):
 
     def message(self) -> str:
         return self.msg
+
+
+@dataclass
+class ListRunDetails(InfoLevel, pt.ListRunDetails):
+    def code(self):
+        return "Z060"
+
+    def message(self) -> str:
+        return self.msg

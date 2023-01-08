@@ -2121,6 +2121,14 @@ class DebugMiscMessages(betterproto.Message):
 
 
 @dataclass
+class ListRunDetails(betterproto.Message):
+    """Z060"""
+
+    info: "EventInfo" = betterproto.message_field(1)
+    msg: str = betterproto.string_field(2)
+
+
+@dataclass
 class IntegrationTestInfo(betterproto.Message):
     """T001"""
 

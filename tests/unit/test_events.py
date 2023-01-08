@@ -477,6 +477,7 @@ sample_values = [
     DebugRunSuccess(msg=""),
     DebugRunFailure(msg=""),
     DebugMiscMessages(msg=""),
+    ListRunDetails(msg=""),
 
     # T - tests ======================
     IntegrationTestInfo(),

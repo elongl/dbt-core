@@ -32,6 +32,7 @@ from dbt.events.contextvars import get_node_info
 from dbt.node_types import NodeType, ModelLanguage
 from dbt.events.format import pluralize
 import dbt.tracking
+import dbt.task.list as list_task
 
 graph_file_name = "graph.gpickle"
 
@@ -482,7 +483,9 @@ class Compiler:
 
         if write:
             self.write_graph_file(linker, manifest)
-        print_compile_stats(stats)
+
+        if not list_task.ListTask == self.config.args.cls:
+            print_compile_stats(stats)
 
         return Graph(linker.graph)
 

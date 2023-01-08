@@ -1,15 +1,20 @@
 import json
 
 from dbt.contracts.graph.nodes import Exposure, SourceDefinition, Metric
+from dbt.flags import get_flag_dict
 from dbt.graph import ResourceTypeSelector
 from dbt.task.runnable import GraphRunnableTask, ManifestTask
 from dbt.task.test import TestSelector
 from dbt.node_types import NodeType
-from dbt.events.functions import warn_or_error
-from dbt.events.types import NoNodesSelected
+from dbt.events.functions import (
+    fire_event,
+    warn_or_error,
+)
+from dbt.events.types import (
+    NoNodesSelected,
+    ListRunDetails,
+)
 from dbt.exceptions import RuntimeException, InternalException
-from dbt.logger import log_manager
-from dbt.events.eventmgr import EventLevel
 
 
 class ListTask(GraphRunnableTask):
@@ -49,20 +54,6 @@ class ListTask(GraphRunnableTask):
                 raise RuntimeException(
                     '"models" and "resource_type" are mutually exclusive ' "arguments"
                 )
-
-    @classmethod
-    def pre_init_hook(cls, args):
-        """A hook called before the task is initialized."""
-        # Filter out all INFO-level logging to allow piping ls output to jq, etc
-        # WARN level will still include all warnings + errors
-        # Do this by:
-        #  - returning the log level so that we can pass it into the 'level_override'
-        #    arg of events.functions.setup_event_logger() -- good!
-        #  - mutating the initialized, not-yet-configured STDOUT event logger
-        #    because it's being configured too late -- bad! TODO refactor!
-        log_manager.stderr_console()
-        super().pre_init_hook(args)
-        return EventLevel.WARN
 
     def _iterate_selected_nodes(self):
         selector = self.get_node_selector()
@@ -148,9 +139,14 @@ class ListTask(GraphRunnableTask):
         return self.output_results(generator())
 
     def output_results(self, results):
+        """Log, or output a plain, newline-delimited, and ready-to-pipe list of nodes found."""
         for result in results:
             self.node_results.append(result)
-            print(result)
+            if get_flag_dict()["log_format"] == "json":
+                fire_event(ListRunDetails(msg=result))
+            else:
+                # Cleaner to leave as print than to mutate the logger.
+                print(result)
         return self.node_results
 
     @property
