@@ -484,7 +484,9 @@ class Compiler:
         if write:
             self.write_graph_file(linker, manifest)
 
-        if self.config.args and not list_task.ListTask == self.config.args.get("cls", None):
+        if getattr(
+            self.config.args, "get", None
+        ) and not list_task.ListTask == self.config.args.get("cls", None):
             print_compile_stats(stats)
 
         return Graph(linker.graph)
