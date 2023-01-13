@@ -31,5 +31,5 @@ class TestDuplicateDocsBlock:
         }
 
     def test_duplicate_doc_ref(self, project):
-        with pytest.raises(dbt.exceptions.CompilationException):
+        with pytest.raises(dbt.exceptions.CompilationError):
             run_dbt(expect_pass=False)

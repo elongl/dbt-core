@@ -47,6 +47,9 @@ class NodeInfo(betterproto.Message):
     node_status: str = betterproto.string_field(6)
     node_started_at: str = betterproto.string_field(7)
     node_finished_at: str = betterproto.string_field(8)
+    meta: Dict[str, str] = betterproto.map_field(
+        9, betterproto.TYPE_STRING, betterproto.TYPE_STRING
+    )
 
 
 @dataclass
@@ -158,120 +161,43 @@ class MissingProfileTargetMsg(betterproto.Message):
 
 
 @dataclass
-class InvalidVarsYAML(betterproto.Message):
+class InvalidOptionYAML(betterproto.Message):
     """A008"""
 
-    pass
+    option_name: str = betterproto.string_field(1)
 
 
 @dataclass
-class InvalidVarsYAMLMsg(betterproto.Message):
+class InvalidOptionYAMLMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "InvalidVarsYAML" = betterproto.message_field(2)
+    data: "InvalidOptionYAML" = betterproto.message_field(2)
 
 
 @dataclass
-class DbtProjectError(betterproto.Message):
+class LogDbtProjectError(betterproto.Message):
     """A009"""
 
-    pass
-
-
-@dataclass
-class DbtProjectErrorMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DbtProjectError" = betterproto.message_field(2)
-
-
-@dataclass
-class DbtProjectErrorException(betterproto.Message):
-    """A010"""
-
     exc: str = betterproto.string_field(1)
 
 
 @dataclass
-class DbtProjectErrorExceptionMsg(betterproto.Message):
+class LogDbtProjectErrorMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "DbtProjectErrorException" = betterproto.message_field(2)
+    data: "LogDbtProjectError" = betterproto.message_field(2)
 
 
 @dataclass
-class DbtProfileError(betterproto.Message):
+class LogDbtProfileError(betterproto.Message):
     """A011"""
 
-    pass
-
-
-@dataclass
-class DbtProfileErrorMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DbtProfileError" = betterproto.message_field(2)
-
-
-@dataclass
-class DbtProfileErrorException(betterproto.Message):
-    """A012"""
-
     exc: str = betterproto.string_field(1)
+    profiles: List[str] = betterproto.string_field(2)
 
 
 @dataclass
-class DbtProfileErrorExceptionMsg(betterproto.Message):
+class LogDbtProfileErrorMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "DbtProfileErrorException" = betterproto.message_field(2)
-
-
-@dataclass
-class ProfileListTitle(betterproto.Message):
-    """A013"""
-
-    pass
-
-
-@dataclass
-class ProfileListTitleMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "ProfileListTitle" = betterproto.message_field(2)
-
-
-@dataclass
-class ListSingleProfile(betterproto.Message):
-    """A014"""
-
-    profile: str = betterproto.string_field(1)
-
-
-@dataclass
-class ListSingleProfileMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "ListSingleProfile" = betterproto.message_field(2)
-
-
-@dataclass
-class NoDefinedProfiles(betterproto.Message):
-    """A015"""
-
-    pass
-
-
-@dataclass
-class NoDefinedProfilesMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "NoDefinedProfiles" = betterproto.message_field(2)
-
-
-@dataclass
-class ProfileHelpMessage(betterproto.Message):
-    """A016"""
-
-    pass
-
-
-@dataclass
-class ProfileHelpMessageMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "ProfileHelpMessage" = betterproto.message_field(2)
+    data: "LogDbtProfileError" = betterproto.message_field(2)
 
 
 @dataclass
@@ -505,19 +431,19 @@ class ExposureNameDeprecationMsg(betterproto.Message):
 
 
 @dataclass
-class FunctionDeprecated(betterproto.Message):
+class InternalDeprecation(betterproto.Message):
     """D008"""
 
-    function_name: str = betterproto.string_field(2)
-    reason: str = betterproto.string_field(3)
-    suggested_action: str = betterproto.string_field(4)
-    version: str = betterproto.string_field(5)
+    name: str = betterproto.string_field(1)
+    reason: str = betterproto.string_field(2)
+    suggested_action: str = betterproto.string_field(3)
+    version: str = betterproto.string_field(4)
 
 
 @dataclass
-class FunctionDeprecatedMsg(betterproto.Message):
+class InternalDeprecationMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "FunctionDeprecated" = betterproto.message_field(2)
+    data: "InternalDeprecation" = betterproto.message_field(2)
 
 
 @dataclass
@@ -827,186 +753,37 @@ class SchemaDropMsg(betterproto.Message):
 
 
 @dataclass
-class UncachedRelation(betterproto.Message):
+class CacheAction(betterproto.Message):
     """E022"""
 
-    dep_key: "ReferenceKeyMsg" = betterproto.message_field(1)
+    action: str = betterproto.string_field(1)
     ref_key: "ReferenceKeyMsg" = betterproto.message_field(2)
+    ref_key_2: "ReferenceKeyMsg" = betterproto.message_field(3)
+    ref_key_3: "ReferenceKeyMsg" = betterproto.message_field(4)
+    ref_list: List["ReferenceKeyMsg"] = betterproto.message_field(5)
 
 
 @dataclass
-class UncachedRelationMsg(betterproto.Message):
+class CacheActionMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "UncachedRelation" = betterproto.message_field(2)
+    data: "CacheAction" = betterproto.message_field(2)
 
 
 @dataclass
-class AddLink(betterproto.Message):
-    """E023"""
-
-    dep_key: "ReferenceKeyMsg" = betterproto.message_field(1)
-    ref_key: "ReferenceKeyMsg" = betterproto.message_field(2)
-
-
-@dataclass
-class AddLinkMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "AddLink" = betterproto.message_field(2)
-
-
-@dataclass
-class AddRelation(betterproto.Message):
-    """E024"""
-
-    relation: "ReferenceKeyMsg" = betterproto.message_field(1)
-
-
-@dataclass
-class AddRelationMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "AddRelation" = betterproto.message_field(2)
-
-
-@dataclass
-class DropMissingRelation(betterproto.Message):
-    """E025"""
-
-    relation: "ReferenceKeyMsg" = betterproto.message_field(1)
-
-
-@dataclass
-class DropMissingRelationMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DropMissingRelation" = betterproto.message_field(2)
-
-
-@dataclass
-class DropCascade(betterproto.Message):
-    """E026"""
-
-    dropped: "ReferenceKeyMsg" = betterproto.message_field(1)
-    consequences: List["ReferenceKeyMsg"] = betterproto.message_field(2)
-
-
-@dataclass
-class DropCascadeMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DropCascade" = betterproto.message_field(2)
-
-
-@dataclass
-class DropRelation(betterproto.Message):
-    """E027"""
-
-    dropped: "ReferenceKeyMsg" = betterproto.message_field(1)
-
-
-@dataclass
-class DropRelationMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DropRelation" = betterproto.message_field(2)
-
-
-@dataclass
-class UpdateReference(betterproto.Message):
-    """E028"""
-
-    old_key: "ReferenceKeyMsg" = betterproto.message_field(1)
-    new_key: "ReferenceKeyMsg" = betterproto.message_field(2)
-    cached_key: "ReferenceKeyMsg" = betterproto.message_field(3)
-
-
-@dataclass
-class UpdateReferenceMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "UpdateReference" = betterproto.message_field(2)
-
-
-@dataclass
-class TemporaryRelation(betterproto.Message):
-    """E029"""
-
-    key: "ReferenceKeyMsg" = betterproto.message_field(1)
-
-
-@dataclass
-class TemporaryRelationMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "TemporaryRelation" = betterproto.message_field(2)
-
-
-@dataclass
-class RenameSchema(betterproto.Message):
-    """E030"""
-
-    old_key: "ReferenceKeyMsg" = betterproto.message_field(1)
-    new_key: "ReferenceKeyMsg" = betterproto.message_field(2)
-
-
-@dataclass
-class RenameSchemaMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "RenameSchema" = betterproto.message_field(2)
-
-
-@dataclass
-class DumpBeforeAddGraph(betterproto.Message):
+class CacheDumpGraph(betterproto.Message):
     """E031"""
 
     dump: Dict[str, "ListOfStrings"] = betterproto.map_field(
         1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
     )
+    before_after: str = betterproto.string_field(2)
+    action: str = betterproto.string_field(3)
 
 
 @dataclass
-class DumpBeforeAddGraphMsg(betterproto.Message):
+class CacheDumpGraphMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "DumpBeforeAddGraph" = betterproto.message_field(2)
-
-
-@dataclass
-class DumpAfterAddGraph(betterproto.Message):
-    """E032"""
-
-    dump: Dict[str, "ListOfStrings"] = betterproto.map_field(
-        1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
-    )
-
-
-@dataclass
-class DumpAfterAddGraphMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DumpAfterAddGraph" = betterproto.message_field(2)
-
-
-@dataclass
-class DumpBeforeRenameSchema(betterproto.Message):
-    """E033"""
-
-    dump: Dict[str, "ListOfStrings"] = betterproto.map_field(
-        1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
-    )
-
-
-@dataclass
-class DumpBeforeRenameSchemaMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DumpBeforeRenameSchema" = betterproto.message_field(2)
-
-
-@dataclass
-class DumpAfterRenameSchema(betterproto.Message):
-    """E034"""
-
-    dump: Dict[str, "ListOfStrings"] = betterproto.map_field(
-        1, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
-    )
-
-
-@dataclass
-class DumpAfterRenameSchemaMsg(betterproto.Message):
-    info: "EventInfo" = betterproto.message_field(1)
-    data: "DumpAfterRenameSchema" = betterproto.message_field(2)
+    data: "CacheDumpGraph" = betterproto.message_field(2)
 
 
 @dataclass
@@ -1170,7 +947,7 @@ class HooksRunningMsg(betterproto.Message):
 
 
 @dataclass
-class HookFinished(betterproto.Message):
+class FinishedRunningStats(betterproto.Message):
     """E047"""
 
     stat_line: str = betterproto.string_field(1)
@@ -1179,9 +956,9 @@ class HookFinished(betterproto.Message):
 
 
 @dataclass
-class HookFinishedMsg(betterproto.Message):
+class FinishedRunningStatsMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "HookFinished" = betterproto.message_field(2)
+    data: "FinishedRunningStats" = betterproto.message_field(2)
 
 
 @dataclass
@@ -1224,20 +1001,20 @@ class MacroFileParseMsg(betterproto.Message):
 
 
 @dataclass
-class PartialParsingExceptionProcessingFile(betterproto.Message):
+class PartialParsingErrorProcessingFile(betterproto.Message):
     """I014"""
 
     file: str = betterproto.string_field(1)
 
 
 @dataclass
-class PartialParsingExceptionProcessingFileMsg(betterproto.Message):
+class PartialParsingErrorProcessingFileMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "PartialParsingExceptionProcessingFile" = betterproto.message_field(2)
+    data: "PartialParsingErrorProcessingFile" = betterproto.message_field(2)
 
 
 @dataclass
-class PartialParsingException(betterproto.Message):
+class PartialParsingError(betterproto.Message):
     """I016"""
 
     exc_info: Dict[str, str] = betterproto.map_field(
@@ -1246,9 +1023,9 @@ class PartialParsingException(betterproto.Message):
 
 
 @dataclass
-class PartialParsingExceptionMsg(betterproto.Message):
+class PartialParsingErrorMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "PartialParsingException" = betterproto.message_field(2)
+    data: "PartialParsingError" = betterproto.message_field(2)
 
 
 @dataclass
@@ -2464,7 +2241,7 @@ class CatchableExceptionOnRunMsg(betterproto.Message):
 
 
 @dataclass
-class InternalExceptionOnRun(betterproto.Message):
+class InternalErrorOnRun(betterproto.Message):
     """W003"""
 
     build_path: str = betterproto.string_field(1)
@@ -2472,9 +2249,9 @@ class InternalExceptionOnRun(betterproto.Message):
 
 
 @dataclass
-class InternalExceptionOnRunMsg(betterproto.Message):
+class InternalErrorOnRunMsg(betterproto.Message):
     info: "EventInfo" = betterproto.message_field(1)
-    data: "InternalExceptionOnRun" = betterproto.message_field(2)
+    data: "InternalErrorOnRun" = betterproto.message_field(2)
 
 
 @dataclass

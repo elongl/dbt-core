@@ -5,6 +5,7 @@ from dbt.events.functions import msg_to_json, LOG_VERSION, msg_to_dict
 from dbt.events.base_types import msg_from_base_event
 from dbt.events.types import *
 from dbt.events.test_types import *
+from dbt.contracts.results import TimingInfo
 
 from dbt.events.base_types import (
     BaseEvent,
@@ -110,15 +111,9 @@ sample_values = [
     MainTrackingUserState(user_state=""),
     MergedFromState(num_merged=0, sample=[]),
     MissingProfileTarget(profile_name="", target_name=""),
-    InvalidVarsYAML(),
-    DbtProjectError(),
-    DbtProjectErrorException(exc=""),
-    DbtProfileError(),
-    DbtProfileErrorException(exc=""),
-    ProfileListTitle(),
-    ListSingleProfile(profile=""),
-    NoDefinedProfiles(),
-    ProfileHelpMessage(),
+    InvalidOptionYAML(option_name="vars"),
+    LogDbtProjectError(),
+    LogDbtProfileError(),
     StarterProjectPath(dir=""),
     ConfigFolderDirectory(dir=""),
     NoSampleProfileFound(adapter=""),
@@ -138,7 +133,7 @@ sample_values = [
     AdapterDeprecationWarning(old_name="", new_name=""),
     MetricAttributesRenamed(metric_name=""),
     ExposureNameDeprecation(exposure=""),
-    FunctionDeprecated(function_name="", reason="", suggested_action="", version=""),
+    InternalDeprecation(name="", reason="", suggested_action="", version=""),
 
     # E - DB Adapter ======================
     AdapterEventDebug(),
@@ -164,35 +159,12 @@ sample_values = [
     ),
     SchemaCreation(relation=ReferenceKeyMsg(database="", schema="", identifier="")),
     SchemaDrop(relation=ReferenceKeyMsg(database="", schema="", identifier="")),
-    UncachedRelation(
-        dep_key=ReferenceKeyMsg(database="", schema="", identifier=""),
+    CacheAction(
+        action="adding_relation",
         ref_key=ReferenceKeyMsg(database="", schema="", identifier=""),
+        ref_key_2=ReferenceKeyMsg(database="", schema="", identifier=""),
     ),
-    AddLink(
-        dep_key=ReferenceKeyMsg(database="", schema="", identifier=""),
-        ref_key=ReferenceKeyMsg(database="", schema="", identifier=""),
-    ),
-    AddRelation(relation=ReferenceKeyMsg(database="", schema="", identifier="")),
-    DropMissingRelation(relation=ReferenceKeyMsg(database="", schema="", identifier="")),
-    DropCascade(
-        dropped=ReferenceKeyMsg(database="", schema="", identifier=""),
-        consequences=[ReferenceKeyMsg(database="", schema="", identifier="")],
-    ),
-    DropRelation(dropped=ReferenceKeyMsg()),
-    UpdateReference(
-        old_key=ReferenceKeyMsg(database="", schema="", identifier=""),
-        new_key=ReferenceKeyMsg(database="", schema="", identifier=""),
-        cached_key=ReferenceKeyMsg(database="", schema="", identifier=""),
-    ),
-    TemporaryRelation(key=ReferenceKeyMsg(database="", schema="", identifier="")),
-    RenameSchema(
-        old_key=ReferenceKeyMsg(database="", schema="", identifier=""),
-        new_key=ReferenceKeyMsg(database="", schema="", identifier=""),
-    ),
-    DumpBeforeAddGraph(dump=dict()),
-    DumpAfterAddGraph(dump=dict()),
-    DumpBeforeRenameSchema(dump=dict()),
-    DumpAfterRenameSchema(dump=dict()),
+    CacheDumpGraph(before_after="before", action="rename", dump=dict()),
     AdapterImportError(exc=""),
     PluginLoadError(exc_info=""),
     NewConnectionOpening(connection_state=""),
@@ -205,15 +177,15 @@ sample_values = [
     BuildingCatalog(),
     DatabaseErrorRunningHook(hook_type=""),
     HooksRunning(num_hooks=0, hook_type=""),
-    HookFinished(stat_line="", execution="", execution_time=0),
+    FinishedRunningStats(stat_line="", execution="", execution_time=0),
 
     # I - Project parsing ======================
     ParseCmdOut(msg="testing"),
     GenericTestFileParse(path=""),
     MacroFileParse(path=""),
-    PartialParsingExceptionProcessingFile(file=""),
+    PartialParsingErrorProcessingFile(file=""),
     PartialParsingFile(file_id=""),
-    PartialParsingException(exc_info={}),
+    PartialParsingError(exc_info={}),
     PartialParsingSkipParsing(),
     UnableToPartialParse(reason="something went wrong"),
     PartialParsingNotEnabled(),
@@ -372,7 +344,7 @@ sample_values = [
     # W - Node testing ======================
 
     CatchableExceptionOnRun(exc=""),
-    InternalExceptionOnRun(build_path="", exc=""),
+    InternalErrorOnRun(build_path="", exc=""),
     GenericExceptionOnRun(build_path="", unique_id="", exc=""),
     NodeConnectionReleaseError(node_name="", exc=""),
     FoundStats(stat_line=""),
@@ -464,3 +436,12 @@ class TestEventJSONSerialization:
 
 
 T = TypeVar("T")
+
+
+def test_date_serialization():
+    ti = TimingInfo("test")
+    ti.begin()
+    ti.end()
+    ti_dict = ti.to_dict()
+    assert ti_dict["started_at"].endswith("Z")
+    assert ti_dict["completed_at"].endswith("Z")
