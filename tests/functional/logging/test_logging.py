@@ -34,6 +34,7 @@ def test_basic(project, logs_dir):
         # The adapter logging also shows up, so skip non-json lines
         if "[debug]" in log_line:
             continue
+        print(f"--- {log_line}")
         log_dct = json.loads(log_line)
         log_data = log_dct["data"]
         log_event = log_dct['info']['name']
