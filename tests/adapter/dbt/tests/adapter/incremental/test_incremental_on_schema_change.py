@@ -6,7 +6,6 @@ from dbt.tests.util import (
 )
 
 from dbt.tests.adapter.incremental.fixtures import (
-    _PROPERTIES__SCHEMA,
     _MODELS__INCREMENTAL_SYNC_REMOVE_ONLY,
     _MODELS__INCREMENTAL_IGNORE,
     _MODELS__INCREMENTAL_SYNC_REMOVE_ONLY_TARGET,
@@ -19,23 +18,10 @@ from dbt.tests.adapter.incremental.fixtures import (
     _MODELS__INCREMENTAL_APPEND_NEW_COLUMNS,
     _MODELS__INCREMENTAL_SYNC_ALL_COLUMNS_TARGET,
     _MODELS__INCREMENTAL_APPEND_NEW_COLUMNS_REMOVE_ONE_TARGET,
-    _TESTS__SELECT_FROM_INCREMENTAL_IGNORE,
-    _TESTS__SELECT_FROM_A,
-    _TESTS__SELECT_FROM_INCREMENTAL_APPEND_NEW_COLUMNS_TARGET,
-    _TESTS__SELECT_FROM_INCREMENTAL_SYNC_ALL_COLUMNS,
-    _TESTS__SELECT_FROM_INCREMENTAL_SYNC_ALL_COLUMNS_TARGET,
-    _TESTS__SELECT_FROM_INCREMENTAL_IGNORE_TARGET,
-    _TESTS__SELECT_FROM_INCREMENTAL_APPEND_NEW_COLUMNS,
 )
 
 
-class BaseIncrementalOnSchemaChange:
-    @pytest.fixture(scope="class")
-    def properties(self):
-        return {
-            "schema.yml": _PROPERTIES__SCHEMA,
-        }
-
+class BaseIncrementalOnSchemaChangeSetup:
     @pytest.fixture(scope="class")
     def models(self):
         return {
@@ -56,23 +42,6 @@ class BaseIncrementalOnSchemaChange:
                 _MODELS__INCREMENTAL_SYNC_ALL_COLUMNS_TARGET,
             "incremental_append_new_columns_remove_one_target.sql":
                 _MODELS__INCREMENTAL_APPEND_NEW_COLUMNS_REMOVE_ONE_TARGET,
-        }
-
-    @pytest.fixture(scope="class")
-    def tests(self):
-        return {
-            "select_from_incremental.sql": _TESTS__SELECT_FROM_INCREMENTAL_IGNORE,
-            "select_from_a.sql": _TESTS__SELECT_FROM_A,
-            "select_from_incremental_append_new_columns_target.sql":
-                _TESTS__SELECT_FROM_INCREMENTAL_APPEND_NEW_COLUMNS_TARGET,
-            "select_from_incremental_sync_all_columns.sql":
-                _TESTS__SELECT_FROM_INCREMENTAL_SYNC_ALL_COLUMNS,
-            "select_from_incremental_sync_all_columns_target.sql":
-                _TESTS__SELECT_FROM_INCREMENTAL_SYNC_ALL_COLUMNS_TARGET,
-            "select_from_incremental_ignore_target.sql":
-                _TESTS__SELECT_FROM_INCREMENTAL_IGNORE_TARGET,
-            "select_from_incremental_append_new_columns.sql":
-                _TESTS__SELECT_FROM_INCREMENTAL_APPEND_NEW_COLUMNS,
         }
 
     def run_twice_and_assert(
@@ -115,6 +84,8 @@ class BaseIncrementalOnSchemaChange:
         compare_target = 'incremental_sync_remove_only_target'
         self.run_twice_and_assert(select, compare_source, compare_target, project)
 
+
+class BaseIncrementalOnSchemaChange(BaseIncrementalOnSchemaChangeSetup):
     def test_run_incremental_ignore(self, project):
         select = 'model_a incremental_ignore incremental_ignore_target'
         compare_source = 'incremental_ignore'
