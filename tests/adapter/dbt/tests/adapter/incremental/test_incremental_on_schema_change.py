@@ -5,7 +5,7 @@ from dbt.tests.util import (
     run_dbt,
 )
 
-from tests.functional.incremental_schema_tests.fixtures import (
+from dbt.tests.adapter.incremental.fixtures import (
     _PROPERTIES__SCHEMA,
     _MODELS__INCREMENTAL_SYNC_REMOVE_ONLY,
     _MODELS__INCREMENTAL_IGNORE,
@@ -29,7 +29,7 @@ from tests.functional.incremental_schema_tests.fixtures import (
 )
 
 
-class TestIncrementalSchemaChange:
+class BaseIncrementalOnSchemaChange:
     @pytest.fixture(scope="class")
     def properties(self):
         return {
@@ -134,3 +134,7 @@ class TestIncrementalSchemaChange:
         run_dbt(['run', '--models', select, '--full-refresh'])
         results_two = run_dbt(['run', '--models', select], expect_pass=False)
         assert 'Compilation Error' in results_two[1].message
+
+
+class TestIncrementalOnSchemaChange(BaseIncrementalOnSchemaChange):
+    pass
