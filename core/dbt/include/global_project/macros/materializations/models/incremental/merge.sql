@@ -1,4 +1,4 @@
-{% macro get_merge_sql(target, source, unique_key, dest_columns, incremental_predicates) -%}
+{% macro get_merge_sql(target, source, unique_key, dest_columns, incremental_predicates=none) -%}
   {{ adapter.dispatch('get_merge_sql', 'dbt')(target, source, unique_key, dest_columns, incremental_predicates) }}
 {%- endmacro %}
 
@@ -50,7 +50,7 @@
 {% endmacro %}
 
 
-{% macro get_delete_insert_merge_sql(target, source, unique_key, dest_columns, incremental_predicates) -%}
+{% macro get_delete_insert_merge_sql(target, source, unique_key, dest_columns, incremental_predicates=none) -%}
   {{ adapter.dispatch('get_delete_insert_merge_sql', 'dbt')(target, source, unique_key, dest_columns, incremental_predicates) }}
 {%- endmacro %}
 
